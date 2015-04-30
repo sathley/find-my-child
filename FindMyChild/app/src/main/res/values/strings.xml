@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">FindMyChild</string>
+    <string name="app_name">Find My Child</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_map">Find My Child</string>
+
+    <string name="socketiourl">http://dev-ct.intangles.com:8019</string>
 </resources>
