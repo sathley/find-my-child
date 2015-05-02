@@ -176,6 +176,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
+        mSocket.on(Socket.EVENT_CONNECT, onConnectListener);
         mSocket.on("ping", onLocationReceived);
         mSocket.on(Socket.EVENT_ERROR, errorListener);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, errorListener);
@@ -219,6 +220,18 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                             }
                         }
                     }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onConnectListener = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    SnackBarManager.showSuccess("Connected to socket io", MapActivity.this);
                 }
             });
         }
@@ -293,6 +306,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Subscribe
     public void onTrackerClick(TrackerItemClickedEvent event) {
         mMap.clear();
+        mCurrentTrackerSelection = event.position;
         Tracker tracker = mUser.getTrackers().get(event.position);
         if (!Double.isNaN(tracker.getLastKnownLongitude()) && !Double.isNaN(tracker.getLastKnowLatitude())) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(tracker.getLastKnowLatitude(), tracker.getLastKnownLongitude()), 15));
