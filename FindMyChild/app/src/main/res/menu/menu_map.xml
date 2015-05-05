@@ -3,4 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.appacitive.findmychild.activities.MapActivity">
 
+    <item android:id="@+id/menu_map_logout"
+        android:icon="@drawable/ic_exit_to_app_white_48dp"
+        android:title="LOGOUT"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        ></item>
+
+
 </menu>

@@ -11,4 +11,15 @@
         app:border_width="0dp"
         app:border_color="#FF000000"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tracker_image"
+        android:text="TAG"
+        android:fontFamily="sans-serif-thin"
+        android:layout_alignRight="@+id/tracker_image"
+        android:layout_alignEnd="@+id/tracker_image"
+        android:gravity="center_vertical|center_horizontal"
+        android:id="@+id/tv_tracker_tag" />
+
 </RelativeLayout>

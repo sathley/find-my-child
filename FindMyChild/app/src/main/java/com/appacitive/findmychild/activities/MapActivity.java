@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +18,13 @@ import com.appacitive.core.AppacitiveObject;
 import com.appacitive.core.model.AppacitiveGraphNode;
 import com.appacitive.core.model.Callback;
 import com.appacitive.findmychild.R;
+import com.appacitive.findmychild.adapters.MapCarouselAdapter;
 import com.appacitive.findmychild.infra.BusProvider;
 import com.appacitive.findmychild.infra.SharedPreferencesManager;
 import com.appacitive.findmychild.infra.SnackBarManager;
 import com.appacitive.findmychild.infra.StorageManager;
 import com.appacitive.findmychild.infra.widgets.Carousel;
 import com.appacitive.findmychild.model.GeoFence;
-import com.appacitive.findmychild.model.MapCarouselAdapter;
 import com.appacitive.findmychild.model.Tracker;
 import com.appacitive.findmychild.model.TrackerUser;
 import com.appacitive.findmychild.model.events.TrackerItemClickedEvent;
@@ -62,6 +61,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @InjectView(R.id.tv_no_trackers)
     protected TextView mNoTrackers;
 
+    @InjectView(R.id.toolbar_default)
+    protected Toolbar mToolbar;
+
     protected Socket mSocket;
     private int mSleepCount = 0;
     private GoogleMap mMap;
@@ -73,6 +75,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         ButterKnife.inject(this);
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitleTextAppearance(this, R.style.AppTheme);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mUserId = SharedPreferencesManager.ReadUserId();
@@ -150,8 +155,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         if (mUser.getTrackers().size() == 0) {
             mNoTrackers.setVisibility(View.VISIBLE);
 
-        } else
-        {
+        } else {
             TrackerItemClickedEvent event = new TrackerItemClickedEvent();
             event.position = 0;
             event.tracker = mUser.getTrackers().get(0);
@@ -204,18 +208,15 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(args == null)
+                    if (args == null)
                         return;
                     JSONObject jsonObject = (JSONObject) args[0];
                     String trackerId = jsonObject.optString("id");
-                    if(trackerId != null && trackerId.equals(mAdapter.getItem(mCurrentTrackerSelection).getId()))
-                    {
+                    if (trackerId != null && trackerId.equals(mAdapter.getItem(mCurrentTrackerSelection).getId())) {
                         String coordinates = jsonObject.optString("latlang");
-                        if(coordinates != null)
-                        {
+                        if (coordinates != null) {
                             String[] coordinateStringArray = coordinates.split(",");
-                            if(coordinateStringArray.length == 2)
-                            {
+                            if (coordinateStringArray.length == 2) {
                                 drawMarker(new LatLng(Double.valueOf(coordinateStringArray[0]), Double.valueOf(coordinateStringArray[1])));
                             }
                         }
@@ -273,6 +274,14 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_map_logout: {
+                SharedPreferencesManager.RemoveUserId();
+                startActivity(new Intent(MapActivity.this, LoginActivity.class));
+                overridePendingTransition(R.anim.slide_in_left_fast, R.anim.slide_out_right_fast);
+                return true;
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 

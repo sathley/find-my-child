@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/primary"
     android:elevation="8dp"
+    android:id="@+id/toolbar_default"
     android:minHeight="@dimen/abc_action_bar_default_height_material"
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp" />
